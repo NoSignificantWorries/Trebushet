@@ -10,7 +10,8 @@ class const:
     h = 0.17
     l1, l2 = 0.055, 0.15
     l3 = (l1 + l2) / 2
-    phi_start = -4 * np.pi / 5
+    # phi_start = -4 * np.pi / 5
+    phi_start = 5 * np.pi / 4
     phi_end = 2
     r = 0.012
     mg = 80 / 1000
@@ -45,6 +46,7 @@ M0 = const.g * (const.mg * const.l1 - const.ms * const.l2 - const.mr * const.l3)
 print("Constant of moment", M0, "H")
 
 # rotation speed by the angle
+print(2 * M0 / J * (np.sin(const.phi_end) - np.sin(const.phi_start)))
 w = np.sqrt(2 * M0 / J * (np.sin(const.phi_end) - np.sin(const.phi_start)))
 print("Rotation speed:", w, "rad/s")
 
@@ -121,7 +123,7 @@ x = solution.y[0]
 y = solution.y[2]
 
 # cropping to correct height
-ground_idx = np.argwhere(y <= const.r).flatten()[0]
+ground_idx = np.argwhere(y <= 0).flatten()[0]
 x = x[:ground_idx]
 y = y[:ground_idx]
 print("Distance with air resistance:", x[-1], "m")
