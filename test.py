@@ -10,13 +10,12 @@ class const:
     h = 0.16
     l1, l2 = 0.055, 0.15
     l3 = (l1 + l2) / 2
-    # phi_start = -4 * np.pi / 5
-    phi_start = 5 * np.pi / 4
-    phi_end = 2
+    phi_start = np.pi / 4
+    phi_end = np.pi
     r = 0.012
     mg = 80 / 1000
-    ms = 3 / 1000
-    mr = 6 / 1000
+    ms = 5 / 1000
+    mr = 3 / 1000
     Jg = 0.4 * mg * 0.03 ** 2
 
     # windage
@@ -34,7 +33,7 @@ class const:
 # shell's inertia
 Js = const.ms * const.l2 ** 2
 # lever's inertia
-Jr = const.mr * (const.l1 + const.l2) ** 2 / 12 + const.mr * const.l3 ** 2
+Jr = const.mr * (const.l1 + const.l2) ** 2 / 3
 # load's inertia
 Jg = const.Jg + const.mg * const.l1 ** 2
 # common inertia
@@ -46,23 +45,24 @@ M0 = const.g * (const.mg * const.l1 - const.ms * const.l2 - const.mr * const.l3)
 print("Constant of moment", M0, "H")
 
 # rotation speed by the angle
-w = -np.sqrt(2 * M0 / J * (np.sin(const.phi_end) - np.sin(const.phi_start)))
+print(2 * M0 / J * (np.sin(const.phi_end) - np.sin(const.phi_start)))
+w = np.sqrt(2 * M0 / J * (np.cos(const.phi_start) - np.cos(const.phi_end)))
 print("Rotation speed:", w, "rad/s")
 
 # vector of velocity by the coordinates
-vox = -const.l2 * np.sin(const.phi_end) * w
-voy = const.l2 * np.cos(const.phi_end) * w
+voy = const.l2 * np.sin(const.phi_end) * w
+vox = -const.l2 * np.cos(const.phi_end) * w
 print("Velosity X:", vox, "m/s")
 print("Velocity Y:", voy, "m/s")
 
 # state of rest position of the lever
-A0 = (const.l2 * np.cos(const.phi_start), const.h + const.l2 * np.sin(const.phi_start))
-B0 = (-const.l1 * np.cos(const.phi_start), const.h - const.l1 * np.sin(const.phi_start))
+A0 = (-const.l2 * np.sin(const.phi_start), const.h - const.l2 * np.cos(const.phi_start))
+B0 = (const.l1 * np.sin(const.phi_start), const.h + const.l1 * np.cos(const.phi_start))
 
 # start position of the level
-A = (const.l2 * np.cos(const.phi_end), const.h + const.l2 * np.sin(const.phi_end))
+A = (-const.l2 * np.sin(const.phi_end), const.h - const.l2 * np.cos(const.phi_end))
 x0, y0 = A
-B = (-const.l1 * np.cos(const.phi_end), const.h - const.l1 * np.sin(const.phi_end))
+B = (const.l1 * np.sin(const.phi_end), const.h + const.l1 * np.cos(const.phi_end))
 
 
 def f(x):
@@ -74,10 +74,8 @@ def f(x):
 
 # calculating shot distance
 D = 4 * (vox * voy + const.g * x0) ** 2 + 4 * const.g * (2 * vox ** 2 * (y0 - const.r) - x0 * (2 * vox * voy + const.g * x0))
-D = 4 * (voy ** 2 + 2 * const.g * (y0 - const.r))
-T = (2 * voy + np.sqrt(D)) / (2 * const.g)
 L = (2 * (vox * voy + const.g * x0) + np.sqrt(D)) / (2 * const.g)
-L = x0 + vox * T
+print("Discriminant:", D)
 print("Distance", L, "m")
 Ly = f(L)
 
