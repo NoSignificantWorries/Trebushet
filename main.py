@@ -62,6 +62,8 @@ B0 = (-const.l1 * np.cos(const.phi_start), const.h - const.l1 * np.sin(const.phi
 A = (const.l2 * np.cos(const.phi_end), const.h + const.l2 * np.sin(const.phi_end))
 x0, y0 = A
 B = (-const.l1 * np.cos(const.phi_end), const.h - const.l1 * np.sin(const.phi_end))
+print("Start x:", x0, "m")
+print("Start y:", y0, "m")
 
 
 def f(x):
@@ -72,10 +74,9 @@ def f(x):
 
 
 # calculating shot distance
-D = 4 * (vox * voy + const.g * x0) ** 2 + 4 * const.g * (2 * vox ** 2 * (y0 - const.r) - x0 * (2 * vox * voy + const.g * x0))
 D = 4 * (voy ** 2 + 2 * const.g * (y0 - const.r))
 T = (2 * voy + np.sqrt(D)) / (2 * const.g)
-L = (2 * (vox * voy + const.g * x0) + np.sqrt(D)) / (2 * const.g)
+print("Flying time:", T, "s")
 L = x0 + vox * T
 print("Distance", L, "m")
 Ly = f(L)
