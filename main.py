@@ -10,7 +10,6 @@ class const:
     h = 0.16
     l1, l2 = 0.055, 0.15
     l3 = (l1 + l2) / 2
-    # phi_start = -4 * np.pi / 5
     phi_start = 5 * np.pi / 4
     phi_end = 2
     r = 0.012
@@ -123,10 +122,22 @@ solution = solve_ivp(
 x = solution.y[0]
 y = solution.y[2]
 
-# cropping to correct height
-ground_idx = np.argwhere(y <= 0).flatten()[0]
-x = x[:ground_idx]
-y = y[:ground_idx]
+# searching final point
+ground_idx = None
+for i in range(1, len(y)):
+    if y[i] <= const.r:
+        x_ground = x[i-1] + (const.r - y[i-1]) * (x[i] - x[i-1]) / (y[i] - y[i-1])
+        y_ground = const.r
+        
+        x = np.append(x[:i], x_ground)
+        y = np.append(y[:i], y_ground)
+        ground_idx = i
+        break
+
+if ground_idx is None:
+    print("Warning: Projectile didn't hit the ground within simulation time")
+    ground_idx = -1
+
 print("Distance with air resistance:", x[-1], "m")
 
 
